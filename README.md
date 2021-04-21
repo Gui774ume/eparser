@@ -55,7 +55,7 @@ Use "eparser [command] --help" for more information about a command.
 # ~ eparser prog --asset my_elf_file.o --section kprobe/my_program --dump
 ```
 
-#### List all the map declared in the ELF file
+#### List all the maps declared in the ELF file
 
 ```shell script
 # ~ eparser map --asset my_elf_file.o
