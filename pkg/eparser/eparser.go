@@ -13,12 +13,12 @@ type EParser struct {
 	collectionSpec *ebpf.CollectionSpec
 }
 
-func (e *EParser) parseAssets(assets string) error {
-	if _, err := os.Stat(assets); err != nil {
+func (e *EParser) parseAsset(asset string) error {
+	if _, err := os.Stat(asset); err != nil {
 		return err
 	}
 
-	f, err := os.Open(assets)
+	f, err := os.Open(asset)
 	if err != nil {
 		return err
 	}
@@ -31,12 +31,12 @@ func (e *EParser) parseAssets(assets string) error {
 }
 
 // NewEParser returns a new EParser instance
-func NewEParser(assets string) (*EParser, error) {
+func NewEParser(asset string) (*EParser, error) {
 	e := &EParser{}
 
-	// parse assets
-	if err := e.parseAssets(assets); err != nil {
-		return nil, errors.Wrap(err, "couldn't parse assets")
+	// parse asset
+	if err := e.parseAsset(asset); err != nil {
+		return nil, errors.Wrapf(err, "couldn't parse asset %s", asset)
 	}
 	return e, nil
 }

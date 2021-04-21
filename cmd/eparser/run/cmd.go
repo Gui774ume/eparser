@@ -39,7 +39,7 @@ var m = &cobra.Command{
 }
 
 type EParserOptions struct {
-	EBPFAssetsPath string
+	EBPFAssetPath string
 	Section        string
 	Dump           bool
 }
@@ -48,12 +48,12 @@ var options EParserOptions
 
 func init() {
 	EParser.PersistentFlags().StringVarP(
-		&options.EBPFAssetsPath,
-		"assets",
+		&options.EBPFAssetPath,
+		"asset",
 		"a",
 		"",
-		"path to the eBPF assets (ELF format expected)")
-	_ = EParser.MarkPersistentFlagRequired("assets")
+		"path to the eBPF asset (ELF format expected)")
+	_ = EParser.MarkPersistentFlagRequired("asset")
 
 	prog.Flags().StringVarP(
 		&options.Section,

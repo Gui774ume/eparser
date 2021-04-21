@@ -22,7 +22,7 @@ import (
 )
 
 func progCmd(cmd *cobra.Command, args []string) error {
-	eparser, err := eparser.NewEParser(options.EBPFAssetsPath)
+	eparser, err := eparser.NewEParser(options.EBPFAssetPath)
 	if err != nil {
 		logrus.Fatalf("failed to run EParser: %v", err)
 	}
@@ -33,7 +33,7 @@ func progCmd(cmd *cobra.Command, args []string) error {
 }
 
 func mapCmd(cmd *cobra.Command, args []string) error {
-	eparser, err := eparser.NewEParser(options.EBPFAssetsPath)
+	eparser, err := eparser.NewEParser(options.EBPFAssetPath)
 	if err != nil {
 		logrus.Fatalf("failed to run EParser: %v", err)
 	}

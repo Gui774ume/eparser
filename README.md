@@ -35,8 +35,8 @@ Available Commands:
   prog        prints information about one or multiple programs
 
 Flags:
-  -a, --assets string   path to the eBPF assets (ELF format expected)
-  -h, --help            help for eparser
+  -a, --asset string   path to the eBPF asset (ELF format expected)
+  -h, --help           help for eparser
 
 Use "eparser [command] --help" for more information about a command.
 ```
@@ -46,17 +46,17 @@ Use "eparser [command] --help" for more information about a command.
 #### List all the program sections provided in the ELF file
 
 ```shell script
-# ~ eparser prog --assets my_elf_file.o
+# ~ eparser prog --asset my_elf_file.o
 ```
 
 #### Dump the bytecode of a program
 
 ```shell script
-# ~ eparser prog --assets my_elf_file.o --section kprobe/my_program --dump
+# ~ eparser prog --asset my_elf_file.o --section kprobe/my_program --dump
 ```
 
 #### List all the map declared in the ELF file
 
 ```shell script
-# ~ eparser map --assets my_elf_file.o
+# ~ eparser map --asset my_elf_file.o
 ```
