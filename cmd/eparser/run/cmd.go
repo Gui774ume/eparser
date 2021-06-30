@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 package run
 
 import (
@@ -21,27 +22,34 @@ import (
 
 // EParser represents the base command of eparser
 var EParser = &cobra.Command{
-	Use:   "eparser",
+	Use: "eparser",
 }
 
 var prog = &cobra.Command{
-	Use: "prog",
+	Use:   "prog",
 	Short: "prints information about one or multiple programs",
-	Long: "prints information about one or multiple programs from the provided ELF file",
-	RunE: progCmd,
+	Long:  "prints information about one or multiple programs from the provided ELF file",
+	RunE:  progCmd,
 }
 
 var m = &cobra.Command{
-	Use: "map",
+	Use:   "map",
 	Short: "prints information about one or multiple maps",
-	Long: "prints information about one or multiple maps from the provided ELF file",
-	RunE: mapCmd,
+	Long:  "prints information about one or multiple maps from the provided ELF file",
+	RunE:  mapCmd,
+}
+
+var report = &cobra.Command{
+	Use:   "report",
+	Short: "prints summarized information about the maps and programs",
+	Long:  "prints summarized information about the maps and programs in the provided ELF file",
+	RunE:  reportCmd,
 }
 
 type EParserOptions struct {
 	EBPFAssetPath string
-	Section        string
-	Dump           bool
+	Section       string
+	Dump          bool
 }
 
 var options EParserOptions
@@ -77,4 +85,5 @@ func init() {
 
 	EParser.AddCommand(prog)
 	EParser.AddCommand(m)
+	EParser.AddCommand(report)
 }

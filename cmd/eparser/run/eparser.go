@@ -13,12 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 package run
 
 import (
-	"github.com/Gui774ume/eparser/pkg/eparser"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
+	"github.com/Gui774ume/eparser/pkg/eparser"
 )
 
 func progCmd(cmd *cobra.Command, args []string) error {
@@ -39,6 +41,17 @@ func mapCmd(cmd *cobra.Command, args []string) error {
 	}
 	if err := eparser.ShowMap(options.Section); err != nil {
 		logrus.Fatalf("failed to run EParser: %v", err)
+	}
+	return nil
+}
+
+func reportCmd(cmd *cobra.Command, args []string) error {
+	eparser, err := eparser.NewEParser(options.EBPFAssetPath)
+	if err != nil {
+		logrus.Fatalf("failed to run ebpfkit-monitor: %v", err)
+	}
+	if err := eparser.ShowReport(); err != nil {
+		logrus.Fatalf("failed to run ebpfkit-monitor: %v", err)
 	}
 	return nil
 }
