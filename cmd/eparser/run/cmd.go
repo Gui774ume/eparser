@@ -49,6 +49,8 @@ var report = &cobra.Command{
 type EParserOptions struct {
 	EBPFAssetPath string
 	Section       string
+	Helper        string
+	Map           string
 	Dump          bool
 }
 
@@ -63,16 +65,24 @@ func init() {
 		"path to the eBPF asset (ELF format expected)")
 	_ = EParser.MarkPersistentFlagRequired("asset")
 
-	prog.Flags().StringVarP(
+	prog.Flags().StringVar(
 		&options.Section,
 		"section",
-		"s",
 		"",
-		"program section to dump")
-	prog.Flags().BoolVarP(
+		"program section selector")
+	prog.Flags().StringVar(
+		&options.Helper,
+		"helper",
+		"",
+		"program section eBPF helper selector")
+	prog.Flags().StringVar(
+		&options.Map,
+		"map",
+		"",
+		"map section selector")
+	prog.Flags().BoolVar(
 		&options.Dump,
 		"dump",
-		"d",
 		false,
 		"dump the program bytecode")
 

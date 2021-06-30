@@ -28,7 +28,10 @@ func progCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		logrus.Fatalf("failed to run EParser: %v", err)
 	}
-	if err := eparser.ShowProgram(options.Section, options.Dump); err != nil {
+	if !eparser.IsValidHelper(options.Helper) {
+		logrus.Fatalf("unknown eBPF helper: %s", options.Helper)
+	}
+	if err := eparser.ShowProgram(options.Section, options.Dump, options.Helper, options.Map); err != nil {
 		logrus.Fatalf("failed to run EParser: %v", err)
 	}
 	return nil
