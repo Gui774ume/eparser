@@ -88,18 +88,31 @@ func (e *EParser) printProgramSpec(spec *ebpf.ProgramSpec, dumpByteCode bool) {
 	fmt.Printf("  KernelVersion: %d\n", spec.KernelVersion)
 	fmt.Printf("  ByteOrder: %s\n", spec.ByteOrder)
 
-	// Print list of eBPF helpers
 	helpers := map[asm.BuiltinFunc]int{}
+	maps := map[string]int{}
 	for _, ins := range spec.Instructions {
 		if ins.OpCode.Class() == asm.JumpClass && ins.OpCode.JumpOp() == asm.Call && ins.Src != asm.PseudoCall {
 			helpers[asm.BuiltinFunc(ins.Constant)] += 1
 		}
+		if len(ins.Reference) > 0 {
+			maps[ins.Reference] += 1
+		}
 	}
+
+	// Print list of eBPF helpers
 	if len(helpers) > 0 {
 		fmt.Println("  Helpers:")
 	}
 	for helper, count := range helpers {
 		fmt.Printf("    - %s: %d\n", helper, count)
+	}
+
+	// Print list of maps
+	if len(maps) > 0 {
+		fmt.Println("  Maps:")
+	}
+	for m, count := range maps {
+		fmt.Printf("    - %s: %d\n", m, count)
 	}
 
 	if dumpByteCode {
@@ -142,6 +155,7 @@ func (e *EParser) ShowReport() error {
 	// Compute list of program types and eBPF helpers
 	progTypes := map[ebpf.ProgramType]map[string]int{}
 	helpers := map[asm.BuiltinFunc]map[string]int{}
+	progMaps := map[string]map[string]int{}
 	for _, p := range e.collectionSpec.Programs {
 		if progTypes[p.Type] == nil {
 			progTypes[p.Type] = map[string]int{}
@@ -154,6 +168,12 @@ func (e *EParser) ShowReport() error {
 					helpers[helper] = map[string]int{}
 				}
 				helpers[helper][p.SectionName] += 1
+			}
+			if len(ins.Reference) > 0 {
+				if progMaps[ins.Reference] == nil {
+					progMaps[ins.Reference] = map[string]int{}
+				}
+				progMaps[ins.Reference][p.SectionName] += 1
 			}
 		}
 	}
@@ -190,6 +210,9 @@ func (e *EParser) ShowReport() error {
 		fmt.Printf("  - %s:\n", t)
 		for m := range maps {
 			fmt.Printf("    * %s\n", m)
+			for p, count := range progMaps[m] {
+				fmt.Printf("      + %s: %d\n", p, count)
+			}
 		}
 	}
 	return nil
