@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/DataDog/ebpf"
+	"github.com/DataDog/ebpf/asm"
 	"github.com/pkg/errors"
 )
 
@@ -70,6 +71,20 @@ func (e *EParser) printProgramSpec(spec *ebpf.ProgramSpec, dumpByteCode bool) {
 	fmt.Printf("  License: %s\n", spec.License)
 	fmt.Printf("  KernelVersion: %d\n", spec.KernelVersion)
 	fmt.Printf("  ByteOrder: %s\n", spec.ByteOrder)
+
+	// Print list of eBPF helpers
+	var helpers []asm.BuiltinFunc
+	for _, ins := range spec.Instructions {
+		if ins.OpCode.Class() == asm.JumpClass && ins.OpCode.JumpOp() == asm.Call && ins.Src != asm.PseudoCall {
+			helpers = append(helpers, asm.BuiltinFunc(ins.Constant))
+		}
+	}
+	if len(helpers) > 0 {
+		fmt.Println("  Helpers:")
+	}
+	for _, helper := range helpers {
+		fmt.Printf("    - %s\n", helper)
+	}
 
 	if dumpByteCode {
 		fmt.Printf("  Bytecode:\n%s", spec.Instructions[1:])
