@@ -29,6 +29,8 @@ import (
 // EParser is the main EParser structure
 type EParser struct {
 	collectionSpec *ebpf.CollectionSpec
+	maxProgLength  int
+	maxProgsPerMap int
 
 	// eBPF helpers
 	helperTranslation map[string]asm.BuiltinFunc
@@ -262,12 +264,26 @@ func (e *EParser) ShowReport() error {
 }
 
 func (e *EParser) processAssets() {
+	// Compute maps
+	var mList []string
+	for _, m := range e.collectionSpec.Maps {
+		mList = append(mList, m.Name)
+		if e.mapTypes[m.Type] == nil {
+			e.mapTypes[m.Type] = map[string]int{}
+		}
+		e.mapTypes[m.Type][m.Name] = 1
+	}
+
 	// Compute programs
 	for _, p := range e.collectionSpec.Programs {
 		if e.programTypes[p.Type] == nil {
 			e.programTypes[p.Type] = map[string]int{}
 		}
 		e.programTypes[p.Type][p.SectionName] = 1
+
+		if len(p.Instructions) > e.maxProgLength {
+			e.maxProgLength = len(p.Instructions)
+		}
 		for _, ins := range p.Instructions {
 			if ins.OpCode.Class() == asm.JumpClass && ins.OpCode.JumpOp() == asm.Call && ins.Src != asm.PseudoCall {
 				helper := asm.BuiltinFunc(ins.Constant)
@@ -282,7 +298,7 @@ func (e *EParser) processAssets() {
 				}
 				e.programHelpers[p.SectionName][helper] += 1
 			}
-			if len(ins.Reference) > 0 {
+			if len(ins.Reference) > 0 && stringArrayContains(mList, ins.Reference) {
 				if e.mapPrograms[ins.Reference] == nil {
 					e.mapPrograms[ins.Reference] = map[string]int{}
 				}
@@ -296,12 +312,10 @@ func (e *EParser) processAssets() {
 		}
 	}
 
-	// Compute maps
-	for _, m := range e.collectionSpec.Maps {
-		if e.mapTypes[m.Type] == nil {
-			e.mapTypes[m.Type] = map[string]int{}
+	for _, progs := range e.mapPrograms {
+		if len(progs) > e.maxProgsPerMap {
+			e.maxProgsPerMap = len(progs)
 		}
-		e.mapTypes[m.Type][m.Name] = 1
 	}
 }
 
@@ -310,4 +324,13 @@ func (e *EParser) IsValidHelper(helper string) bool {
 		return true
 	}
 	return e.helperTranslation[helper] != 0
+}
+
+func stringArrayContains(array []string, elem string) bool {
+	for _, a := range array {
+		if elem == a {
+			return true
+		}
+	}
+	return false
 }

@@ -46,6 +46,13 @@ var report = &cobra.Command{
 	RunE:  reportCmd,
 }
 
+var graph = &cobra.Command{
+	Use:   "graph",
+	Short: "graph plots programs and maps",
+	Long:  "graph plots programs and maps in the provided ELF file",
+	RunE:  graphCmd,
+}
+
 type EParserOptions struct {
 	EBPFAssetPath string
 	Section       string
@@ -96,4 +103,5 @@ func init() {
 	EParser.AddCommand(prog)
 	EParser.AddCommand(m)
 	EParser.AddCommand(report)
+	EParser.AddCommand(graph)
 }

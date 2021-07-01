@@ -51,10 +51,21 @@ func mapCmd(cmd *cobra.Command, args []string) error {
 func reportCmd(cmd *cobra.Command, args []string) error {
 	eparser, err := eparser.NewEParser(options.EBPFAssetPath)
 	if err != nil {
-		logrus.Fatalf("failed to run ebpfkit-monitor: %v", err)
+		logrus.Fatalf("failed to run EParser: %v", err)
 	}
 	if err := eparser.ShowReport(); err != nil {
-		logrus.Fatalf("failed to run ebpfkit-monitor: %v", err)
+		logrus.Fatalf("failed to run EParser: %v", err)
+	}
+	return nil
+}
+
+func graphCmd(cmd *cobra.Command, args []string) error {
+	eparser, err := eparser.NewEParser(options.EBPFAssetPath)
+	if err != nil {
+		logrus.Fatalf("failed to run EParser: %v", err)
+	}
+	if err := eparser.GenerateGraph(options.EBPFAssetPath); err != nil {
+		logrus.Fatalf("failed to run EParser: %v", err)
 	}
 	return nil
 }
