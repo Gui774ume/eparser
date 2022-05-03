@@ -21,8 +21,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/DataDog/ebpf"
-	"github.com/DataDog/ebpf/asm"
+	"github.com/cilium/ebpf"
+	"github.com/cilium/ebpf/asm"
 	"github.com/pkg/errors"
 )
 

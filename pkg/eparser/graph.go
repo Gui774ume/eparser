@@ -22,8 +22,7 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/DataDog/ebpf"
-
+	"github.com/cilium/ebpf"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/blake2b"
 )
@@ -155,7 +154,7 @@ func (e *EParser) prepareGraphData(title string) graph {
 		data.Maps[m.Name] = node{
 			ID:    generateNodeID(m.Name),
 			Label: m.Name,
-			Size:  len(e.mapPrograms[m.Name])/e.maxProgsPerMap*40 + 30,
+			Size:  len(e.mapPrograms[m.Name])/(e.maxProgsPerMap*40+1) + 30,
 			Color: "#8fbbff",
 		}
 	}
